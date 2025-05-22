@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traductor de Lenguaje de Señas</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.2em;
+        }
+        .video-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .video-box {
+            border: 3px solid var(--secondary-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            background: #000;
+        }
+        .info-panel {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 20px;
+            gap: 20px;
+        }
+        .info-box {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 100%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .info-box:hover {
+            transform: translateY(-5px);
+        }
+        .info-box h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.4em;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        #accuracy {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--success-color);
+            margin: 15px 0;
+        }
+        #translation {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 15px 0;
+            text-transform: uppercase;
+        }
+        .confidence-bar {
+            height: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        .confidence-level {
+            height: 100%;
+            background: var(--success-color);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.9em;
+        }
+        .status {
+            font-size: 0.8em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        @media (max-width: 768px) {
+            .info-panel {
+                flex-direction: column;
+            }
+            .video-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Traductor de Lenguaje de Señas</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="video-container">
+            <div class="video-box">
+                <img src="{{ url_for('video') }}" style="width: 100%; height: auto; display: block;"> alt="Cámara de lenguaje de señas">
+            </div>
+            
+            <div class="info-panel">
+                <div class="info-box">
+                    <h3>Confianza</h3>
+                    <div id="accuracy">0%</div>
+                    <div class="confidence-bar">
+                        <div class="confidence-level" id="confidence-bar"></div>
+                    </div>
+                    <div class="status" id="status">Esperando detección...</div>
+                </div>
+                <div class="info-box">
+                    <h3>Seña Detectada</h3>
+                    <div id="translation">---</div>
+                    <div class="status">Sistema activo</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Sistema de reconocimiento de lenguaje de señas - Proyecto Python</p>
+    </footer>
+
+    <script>
+        // Elementos del DOM
+        const accuracyElement = document.getElementById('accuracy');
+        const translationElement = document.getElementById('translation');
+        const confidenceBar = document.getElementById('confidence-bar');
+        const statusElement = document.getElementById('status');
+        
+        // Función para actualizar la interfaz
+        function updateUI(data) {
+            if (data.prediction && data.confidence) {
+                translationElement.textContent = data.prediction;
+                accuracyElement.textContent = data.confidence + '%';
+                confidenceBar.style.width = data.confidence + '%';
+                
+                // Cambiar color según confianza
+                if (data.confidence > 80) {
+                    confidenceBar.style.background = '#27ae60';
+                    statusElement.textContent = "Alta confianza";
+                } else if (data.confidence > 50) {
+                    confidenceBar.style.background = '#f39c12';
+                    statusElement.textContent = "Confianza media";
+                } else {
+                    confidenceBar.style.background = '#e74c3c';
+                    statusElement.textContent = "Baja confianza";
+                }
+            }
+        }
+        
+        // Conexión para obtener predicciones
+        function connectToPredictionStream() {
+            const eventSource = new EventSource("/get_prediction");
+            
+            eventSource.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    updateUI(data);
+                } catch (e) {
+                    console.error("Error al parsear datos:", e);
+                }
+            };
+            
+            eventSource.onerror = function() {
+                console.error("Error en la conexión SSE");
+                statusElement.textContent = "Error de conexión - Reconectando...";
+                setTimeout(connectToPredictionStream, 3000);
+            };
+        }
+        
+        // Iniciar conexión
+        connectToPredictionStream();
+        
+        // Actualización periódica alternativa (fallback)
+        setInterval(async () => {
+            try {
+                const response = await fetch('/get_prediction');
+                if (response.ok) {
+                    const data = await response.json();
+                    updateUI(data);
+                }
+            } catch (e) {
+                console.log("Fallback polling:", e);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
