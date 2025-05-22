@@ -8,61 +8,95 @@ from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.metrics import classification_report
 from sklearn.preprocessing import LabelEncoder
 
-# Ruta base
-DATA_PATH = os.path.join('MP_Data')
-acciones = np.array(os.listdir(DATA_PATH))
+# Parámetros de datos
+DATA_PATH = 'MP_Data'
+LONGITUD_SECUENCIA = 30
+# Número total de características por frame: 63 coords × 2 manos
+N_FEATURES = 63 * 2
+
+# Obtener las subcarpetas (acciones) de MP_Data
+acciones = [d for d in os.listdir(DATA_PATH) if os.path.isdir(os.path.join(DATA_PATH, d))]
 
 secuencias, etiquetas = [], []
-
 print("📦 Cargando datos desde MP_Data...\n")
+
 for label in acciones:
-    for secuencia in os.listdir(os.path.join(DATA_PATH, label)):
-        archivo = os.path.join(DATA_PATH, label, secuencia, "datos.npy")
-        if os.path.isfile(archivo):
-            secuencia_datos = np.load(archivo)
-
-            # ⚠️ VALIDAR SHAPE EXACTO (30, 63)
-            if secuencia_datos.shape != (30, 63):
-                print(f"❌ Descarta: {archivo} con shape {secuencia_datos.shape}")
-                continue
-
-            secuencias.append(secuencia_datos)
-            etiquetas.append(label)
+    ruta_label = os.path.join(DATA_PATH, label)
+    for seq in os.listdir(ruta_label):
+        archivo = os.path.join(ruta_label, seq, 'datos.npy')
+        if not os.path.isfile(archivo):
+            continue
+        data_seq = np.load(archivo)
+        # Aceptar secuencias con 1 mano (63 features) o 2 manos (126 features)
+        if data_seq.shape == (LONGITUD_SECUENCIA, N_FEATURES):
+            valid_seq = data_seq
+        elif data_seq.shape == (LONGITUD_SECUENCIA, N_FEATURES // 2):
+            # pad zeros para la segunda mano
+            pad = np.zeros((LONGITUD_SECUENCIA, N_FEATURES // 2))
+            valid_seq = np.concatenate([data_seq, pad], axis=1)
+        else:
+            print(f"❌ Descarta: {archivo} con shape {data_seq.shape}")
+            continue
+        secuencias.append(valid_seq)
+        etiquetas.append(label)
 
 print(f"\n📊 Total secuencias válidas: {len(secuencias)}")
-print(f"🏷️  Clases válidas: {np.unique(etiquetas).tolist()}")
+print(f"🏷️  Clases detectadas: {sorted(set(etiquetas))}\n")
 
-# Codificar etiquetas
+# Codificar etiquetas a one-hot
 le = LabelEncoder()
-etiquetas_codificadas = le.fit_transform(etiquetas)
-etiquetas_onehot = to_categorical(etiquetas_codificadas)
+labels_encoded = le.fit_transform(etiquetas)
+y = to_categorical(labels_encoded)
 
-# Preparar datos
+# Convertir a arrays numpy
 X = np.array(secuencias)
-y = etiquetas_onehot
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=etiquetas_codificadas, random_state=42)
 
-# Crear modelo LSTM
-modelo = Sequential()
-modelo.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(30, 63)))
-modelo.add(LSTM(64, return_sequences=False, activation='relu'))
-modelo.add(Dense(64, activation='relu'))
-modelo.add(Dense(len(le.classes_), activation='softmax'))
+# Dividir en entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,
+    stratify=labels_encoded,
+    random_state=42
+)
 
-modelo.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+# Definir el modelo LSTM
+modelo = Sequential([
+    LSTM(64, return_sequences=True, activation='relu',
+         input_shape=(LONGITUD_SECUENCIA, N_FEATURES)),
+    LSTM(64, return_sequences=False, activation='relu'),
+    Dense(64, activation='relu'),
+    Dense(len(le.classes_), activation='softmax')
+])
 
-# Entrenar modelo
-print("\n🔁 Entrenando modelo LSTM...")
-modelo.fit(X_train, y_train, epochs=30, callbacks=[EarlyStopping(patience=5)], validation_data=(X_test, y_test))
+modelo.compile(
+    optimizer='adam',
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
 
-# Evaluar modelo
+# Entrenamiento
+print("🔁 Entrenando modelo LSTM...")
+modelo.fit(
+    X_train, y_train,
+    epochs=30,
+    callbacks=[EarlyStopping(patience=5)],
+    validation_data=(X_test, y_test)
+)
+
+# Evaluación
 print("\n📈 Evaluación del modelo:")
 y_pred = modelo.predict(X_test)
 y_pred_labels = np.argmax(y_pred, axis=1)
 y_true_labels = np.argmax(y_test, axis=1)
-print(classification_report(y_true_labels, y_pred_labels, target_names=le.classes_))
+print(
+    classification_report(
+        y_true_labels,
+        y_pred_labels,
+        target_names=le.classes_
+    )
+)
 
-# Guardar modelo y etiquetas
+# Guardar modelo y clases
 modelo.save('modelo.h5')
 np.save('clases.npy', le.classes_)
 
