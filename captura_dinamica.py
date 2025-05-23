@@ -17,7 +17,11 @@ drawing = mp.solutions.drawing_utils
 
 # Lista de señas dinámicas a capturar
 
+<<<<<<< HEAD
 acciones = np.array(['Novio'])  # usa minúsculas si así las guardaste
+=======
+acciones = np.array(['Familia'])  # usa minúsculas si así las guardaste
+>>>>>>> 5edde8398a793353c6da77c65ec3422fa99786b0
 
 
 # Configuraciones de captura
