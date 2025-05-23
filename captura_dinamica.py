@@ -12,7 +12,7 @@ hands = mp_hands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7
 drawing = mp.solutions.drawing_utils
 
 # Lista de señas dinámicas a capturar
-acciones = np.array(['papa'])  # usa minúsculas si así las guardaste
+acciones = np.array(['A'])  # usa minúsculas si así las guardaste
 
 # Configuraciones de captura
 no_secuencias = 30

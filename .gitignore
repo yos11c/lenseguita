@@ -4,6 +4,6 @@ __pycache__/
 *.pyo
 *.pyd
 *.pkl
-*.h5
+#*.h5
 *.log
 .DS_Store
