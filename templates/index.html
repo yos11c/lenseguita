@@ -332,28 +332,77 @@
     const translationElement = document.getElementById('translation');
     const confidenceBar = document.getElementById('confidence-bar');
     const statusElement = document.getElementById('status');
-    
-    // Función para actualizar la interfaz
-    function updateUI(data) {
-        if (data.prediction && data.confidence) {
-            translationElement.textContent = data.prediction;
-            accuracyElement.textContent = data.confidence + '%';
-            confidenceBar.style.width = data.confidence + '%';
-            
-            // Cambiar color según confianza
-            if (data.confidence > 80) {
-                confidenceBar.style.background = '#27ae60';
-                statusElement.textContent = "Alta confianza";
-            } else if (data.confidence > 50) {
-                confidenceBar.style.background = '#f39c12';
-                statusElement.textContent = "Confianza media";
-            } else {
-                confidenceBar.style.background = '#e74c3c';
-                statusElement.textContent = "Baja confianza";
-            }
+
+    // Variables de estado
+    let lastSpokenPrediction = null;
+    let lastDisplayedPrediction = null;
+    let speechSynthesis = window.speechSynthesis;
+
+    // Función para hablar el texto (si está disponible)
+    function speakText(text) {
+        if (speechSynthesis) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES';
+            speechSynthesis.speak(utterance);
         }
     }
+
+// Función para actualizar la interfaz
+function updateUI(data) {
+    if (!data.prediction || !data.confidence) {
+        // No se detecta gesto o mano
+        translationElement.textContent = '---';
+        accuracyElement.textContent = '0%';
+        confidenceBar.style.width = '0%';
+        confidenceBar.style.background = '#ecf0f1';
+        statusElement.textContent = "No se detecta gesto";
+        lastDisplayedPrediction = null;
+        lastSpokenPrediction = null;
+        return;
+    }
+
+    // Actualizar siempre la barra de confianza y porcentaje
+    accuracyElement.textContent = data.confidence + '%';
+    confidenceBar.style.width = data.confidence + '%';
     
+    // Cambiar color según confianza
+    if (data.confidence > 80) {
+        confidenceBar.style.background = '#27ae60';
+        statusElement.textContent = "Alta confianza";
+    } else if (data.confidence > 50) {
+        confidenceBar.style.background = '#f39c12';
+        statusElement.textContent = "Confianza media";
+    } else if (data.confidence > 30) {
+        confidenceBar.style.background = '#e74c3c';
+        statusElement.textContent = "Baja confianza";
+    } else {
+        confidenceBar.style.background = '#ecf0f1';
+        statusElement.textContent = "Muy baja confianza";
+    }
+
+    // Mostrar predicción si la confianza es mayor al 30%
+    if (data.confidence > 30) {
+        // Mostrar siempre la predicción actual
+        translationElement.textContent = data.prediction;
+        
+        // Hablar solo si la confianza es mayor al 85% y es una nueva predicción
+        if (data.confidence > 85) {
+            // Verificar si es una nueva predicción diferente a la anterior
+            if (data.prediction !== lastSpokenPrediction) {
+                lastSpokenPrediction = data.prediction;
+                speakText(data.prediction);
+            }
+        }
+    } else {
+        // Si la confianza es <= 30%, no mostrar nada en "Seña Detectada"
+        translationElement.textContent = '---';
+        lastSpokenPrediction = null; // Resetear para permitir que se hable de nuevo si vuelve a subir
+    }
+
+    // Actualizar siempre la última predicción mostrada
+    lastDisplayedPrediction = data.prediction;
+}
+
     // Conexión para obtener predicciones
     function connectToPredictionStream() {
         const eventSource = new EventSource("/get_prediction");
@@ -389,7 +438,7 @@
             console.log("Fallback polling:", e);
         }
     }, 1000);
-</script>
+  </script>
   <!-- Accordion image loader script -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -500,6 +549,6 @@
       });
     });
   });
-</script>
+  </script>
 </body>
 </html>
