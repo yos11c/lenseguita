@@ -17,16 +17,15 @@ drawing = mp.solutions.drawing_utils
 
 # Lista de señas dinámicas a capturar
 
-<<<<<<< HEAD
-acciones = np.array(['Novio'])  # usa minúsculas si así las guardaste
-=======
-acciones = np.array(['Familia'])  # usa minúsculas si así las guardaste
->>>>>>> 5edde8398a793353c6da77c65ec3422fa99786b0
+acciones = np.array(['hola'])  # Cambiar por la seña deseada
 
+# ===== TIEMPO DE CAPTURA =====
+TIEMPO_CAPTURA = 3  # Segundos (2 para señas cortas, 5 para largas)
+# ==================================
 
 # Configuraciones de captura
-o_secuencias = 30
-longitud_secuencia = 30
+o_secuencias = 30 # Número de repeticiones
+longitud_secuencia = int(TIEMPO_CAPTURA * 10) # 10 fps
 
 # Crear las carpetas base y subdirectorios para cada acción
 for accion in acciones:
@@ -100,7 +99,17 @@ for accion in acciones:
 
             if cv2.waitKey(1) & 0xFF == 27:
                 break
+        
+        # Añadir visualización de tiempo
+            tiempo_actual = (frame_num + 1) / 10  # 10 fps
+            cv2.putText(frame, f'Tiempo: {tiempo_actual:.1f}s', (10, 110),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 1)
+            
+            cv2.imshow('Grabando seña dinámica', frame)
 
+            if cv2.waitKey(100) & 0xFF == 27:  # 100ms = ~10 fps
+                break
+            
         # Guardar datos de la secuencia
         np.save(
             os.path.join(base_path, str(secuencia), 'datos'),
