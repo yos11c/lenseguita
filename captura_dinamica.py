@@ -16,11 +16,9 @@ hands = mp_hands.Hands(
 drawing = mp.solutions.drawing_utils
 
 # Lista de señas dinámicas a capturar
-<<<<<<< HEAD
-acciones = np.array(['A'])  # usa minúsculas si así las guardaste
-=======
-acciones = np.array(['a'])  # usa minúsculas si así las guardaste
->>>>>>> 737f6b313488ef3503354b9392a596effaaaeef8
+
+acciones = np.array(['hermano'])  # usa minúsculas si así las guardaste
+
 
 # Configuraciones de captura
 o_secuencias = 30
