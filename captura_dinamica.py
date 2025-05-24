@@ -17,12 +17,7 @@ drawing = mp.solutions.drawing_utils
 
 # Lista de señas dinámicas a capturar
 
-<<<<<<< HEAD
-acciones = np.array(['Domingo'])  # usa minúsculas si así las guardaste
-
-=======
 acciones = np.array(['p'])  # usa minúsculas si así las guardaste
->>>>>>> e4c5138fb905788e58e98f7f29337b376241e6a7
 
 # Configuraciones de captura
 o_secuencias = 30
