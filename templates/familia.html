@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lenguaje de Señas</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --success-color: #27ae60;
+      --danger-color: #e74c3c;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+    /* Header banner */
+    header {
+      background-color: var(--primary-color) !important;
+      color: white;
+      padding: 10px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 0;
+    }
+    h1 { margin: 0; font-size: 2.2em; }
+
+    /* Layout adjustments */
+    .vh-100 { height: 100vh; }
+    
+    #sidebar { 
+        border-right: 1px solid #ddd;
+        padding: 10px 15px;
+    }
+    
+    #sidebar-content 
+    .card { 
+        max-width: 420px; 
+        margin: 0 auto; 
+        margin-top: 10px; 
+    }
+
+    .card-body {
+        padding: 10px;
+      }
+      
+      .card-text {
+        margin-bottom: 5px;
+        font-size: 1rem;
+      }
+
+    /* Accordion sidebar */
+    .list-group-item { cursor: pointer; }
+
+    .accordion-body {
+        padding: 0.5rem 1rem;
+      }
+      
+      .accordion-item {
+        margin-bottom: 5px;
+      }
+
+    /* Video & info panel */
+    .video-box {
+        width: 640px;
+        height: 360px;
+      border: 3px solid var(--secondary-color);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      background: #000;
+      margin: 0 auto;
+    }
+
+    .video-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+    .info-panel {
+      display: flex;
+      justify-content: space-around;
+      width: 800px;
+      height: 240px;
+      margin: 20px auto 0;
+      margin-top: 10px;
+      padding: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+    }
+    .info-box {
+      background-color: white;
+      border-radius: 4px;
+      padding: 5px 15px;
+      min-width: 300px;
+      height: 100%;
+      flex: 1;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .info-box:hover { 
+        transform: translateY(-5px); 
+    }
+
+    .info-box h3 {
+      color: var(--primary-color);
+      margin-top: 0;
+      margin: 8px 0;
+      font-size: 1.8em;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+    #accuracy { 
+        font-size: 2.2em; 
+        font-weight: bold; 
+        color: var(--success-color); 
+        margin: 15px 0; 
+    }
+
+    #translation { 
+        font-size: 2.2em; 
+        font-weight: bold; 
+        color: var(--primary-color); 
+        margin: 15px 0; 
+        text-transform: uppercase; 
+    }
+
+    .confidence-bar 
+    { height: 8px; 
+        background: #ecf0f1; 
+        border-radius: 5px; 
+        margin-top: 8px; 
+        overflow: hidden; 
+    }
+
+    .confidence-level 
+    { height: 100%; 
+        width: 0%; 
+        transition: width 0.5s ease; 
+    }
+
+    footer {
+      text-align: center;
+      background-color: var(--primary-color);
+      padding: 5px 0;
+      color: white;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid vh-100 d-flex flex-column p-0">
+    <!-- Header Banner -->
+    <header>
+      <div class="container">
+        <h3>FAMILIA</h3>
+      </div>
+    </header>
+
+    <!-- Body -->
+    <div class="row flex-grow-1 g-0">
+      <!-- Sidebar Accordion -->
+      <aside id="sidebar" class="col-12 col-md-4 p-3 overflow-auto">
+
+        <div class="container">
+          <a href="/" class="btn btn-outline-secondary">← Inicio</a>
+
+        </div>
+        
+        <br>
+        <div class="accordion" id="accordionCategories">
+          <span class="navbar-brand mx-auto">Familia</span><br>
+          <!-- Familia -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFamilia">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFamilia" aria-expanded="false" aria-controls="collapseFamilia">
+                Lecciones
+              </button>
+            </h2>
+            <div id="collapseFamilia" class="accordion-collapse collapse" aria-labelledby="headingFamilia" data-bs-parent="#accordionCategories">
+              <div class="accordion-body">
+                <ul class="list-group">
+                  <li class="list-group-item list-item" data-key="Familia">Familia</li>
+                  <li class="list-group-item list-item" data-key="Padre">Padre</li>
+                  <li class="list-group-item list-item" data-key="Madre">Madre</li>
+                  <li class="list-group-item list-item" data-key="Hermano">Hermano</li>
+                  <li class="list-group-item list-item" data-key="Hija">Hija</li>
+                  <li class="list-group-item list-item" data-key="Abuelo">Abuelo</li>
+                  <li class="list-group-item list-item" data-key="Nieto">Nieto</li>
+                  <li class="list-group-item list-item" data-key="Novio">Novio</li>
+                  <li class="list-group-item list-item" data-key="Bebe">Bebé</li>
+                  <li class="list-group-item list-item" data-key="Tia">Tia</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Imagen lección -->
+        <div id="sidebar-content" class="mt-6"></div>
+      </aside>
+
+      <!-- Video + info -->
+      <main class="col-12 col-md-8 p-3 overflow-auto">
+        <div class="container">
+          <div class="video-container">
+            <div class="video-box">
+              <img src="{{ url_for('video_feed', cat='familia') }}" width="640" height="360" alt="Cámara de lenguaje de señas">
+            </div>
+            <div class="info-panel">
+              <div class="info-box">
+                <h3>Confianza</h3>
+                <div id="accuracy">0%</div>
+                <div class="confidence-bar"><div class="confidence-level" id="confidence-bar"></div></div>
+                <div class="status" id="status">Estado</div>
+              </div>
+              <div class="info-box">
+                <h3>Seña Detectada</h3>
+                <div id="translation">---</div>
+                <div class="status">Sistema activo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>Sistema de reconocimiento de lenguaje de señas - Proyecto Inteligencia Artificial</p>
+    </footer>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- SSE & UI update script -->
+  <script>
+    // Elementos del DOM
+    const accuracyElement = document.getElementById('accuracy');
+    const translationElement = document.getElementById('translation');
+    const confidenceBar = document.getElementById('confidence-bar');
+    const statusElement = document.getElementById('status');
+
+    // Variables de estado
+    let lastSpokenPrediction = null;
+    let lastDisplayedPrediction = null;
+    let speechSynthesis = window.speechSynthesis;
+
+    // Función para hablar el texto (si está disponible)
+    function speakText(text) {
+        if (speechSynthesis) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES';
+            speechSynthesis.speak(utterance);
+        }
+    }
+
+// Función para actualizar la interfaz
+function updateUI(data) {
+    if (!data.prediction || !data.confidence) {
+        // No se detecta gesto o mano
+        translationElement.textContent = '---';
+        accuracyElement.textContent = '0%';
+        confidenceBar.style.width = '0%';
+        confidenceBar.style.background = '#ecf0f1';
+        statusElement.textContent = "No se detecta gesto";
+        lastDisplayedPrediction = null;
+        lastSpokenPrediction = null;
+        return;
+    }
+
+    // Actualizar siempre la barra de confianza y porcentaje
+    accuracyElement.textContent = data.confidence + '%';
+    confidenceBar.style.width = data.confidence + '%';
+    
+    // Cambiar color según confianza
+    if (data.confidence > 80) {
+        confidenceBar.style.background = '#27ae60';
+        statusElement.textContent = "Alta confianza";
+    } else if (data.confidence > 50) {
+        confidenceBar.style.background = '#f39c12';
+        statusElement.textContent = "Confianza media";
+    } else if (data.confidence > 30) {
+        confidenceBar.style.background = '#e74c3c';
+        statusElement.textContent = "Baja confianza";
+    } else {
+        confidenceBar.style.background = '#ecf0f1';
+        statusElement.textContent = "Muy baja confianza";
+    }
+
+    // Mostrar predicción si la confianza es mayor al 30%
+    if (data.confidence > 30) {
+        // Mostrar siempre la predicción actual
+        translationElement.textContent = data.prediction;
+        
+        // Hablar solo si la confianza es mayor al 85% y es una nueva predicción
+        if (data.confidence > 85) {
+            // Verificar si es una nueva predicción diferente a la anterior
+            if (data.prediction !== lastSpokenPrediction) {
+                lastSpokenPrediction = data.prediction;
+                speakText(data.prediction);
+            }
+        }
+    } else {
+        // Si la confianza es <= 30%, no mostrar nada en "Seña Detectada"
+        translationElement.textContent = '---';
+        lastSpokenPrediction = null; // Resetear para permitir que se hable de nuevo si vuelve a subir
+    }
+
+    // Actualizar siempre la última predicción mostrada
+    lastDisplayedPrediction = data.prediction;
+}
+
+    // Conexión para obtener predicciones
+    function connectToPredictionStream() {
+        const eventSource = new EventSource("/get_prediction/familia");
+        
+        eventSource.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                updateUI(data);
+            } catch (e) {
+                console.error("Error al parsear datos:", e);
+            }
+        };
+        
+        eventSource.onerror = function() {
+            console.error("Error en la conexión SSE");
+            statusElement.textContent = "Error de conexión - Reconectando...";
+            setTimeout(connectToPredictionStream, 3000);
+        };
+    }
+    
+    // Iniciar conexión
+    connectToPredictionStream();
+    
+    // Actualización periódica alternativa (fallback)
+    setInterval(async () => {
+        try {
+            const response = await fetch('/get_prediction/familia');
+            if (response.ok) {
+                const data = await response.json();
+                updateUI(data);
+            }
+        } catch (e) {
+            console.log("Fallback polling:", e);
+        }
+    }, 1000);
+  </script>
+  <!-- Accordion image loader script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mapping = {
+        //URL FAMILIA
+        'Familia':  { img: 'https://firebasestorage.googleapis.com/v0/b/lensegua-20316.appspot.com/o/00002%2F00007%2Ffamilia.webm?alt=media&token=3d0d9e13-e1ba-45da-8951-8fe1bc2cb03e', txt: 'Seña "Familia"' },          
+        'Padre':  { img: 'https://firebasestorage.googleapis.com/v0/b/lensegua-20316.appspot.com/o/00002%2F00007%2Fpapa%CC%81.webm?alt=media&token=eb0baa14-0978-40c5-928f-8b4b3ca2830e', txt: 'Seña "Padre"' },
+        'Madre':  { img: 'https://firebasestorage.googleapis.com/v0/b/lensegua-20316.appspot.com/o/00002%2F00007%2Fmama%CC%81.webm?alt=media&token=1d0f11af-69e9-401d-82cc-a3b7238bd2a0', txt: 'Seña "Madre"' },
+        'Hermano':{ img: 'https://firebasestorage.googleapis.com/v0/b/lensegua-20316.appspot.com/o/00002%2F00007%2Fhermano.webm?alt=media&token=188dd6ed-f94e-4704-96b8-3b8de922e88e', txt: 'Seña "Hermano"' },
+        'Hija':{ img: 'https://firebasestorage.googleapis.com/v0/b/lensegua-20316.appspot.com/o/00002%2F00007%2Fhija.webm?alt=media&token=f4e98ba6-9b75-4b03-aed6-5fcec7c8ca2c', txt: 'Seña "Hija"' },
+        'Abuelo':{ img: 'https://firebasestorage.googleapis.com/v0/b/lensegua-20316.appspot.com/o/00002%2F00007%2Fabuelo.webm?alt=media&token=ed79d5eb-3867-4c6a-99f6-ceefda3f5056', txt: 'Seña "Abuelo"' },
+        'Nieto':{ img: 'https://firebasestorage.googleapis.com/v0/b/lensegua-20316.appspot.com/o/00002%2F00007%2Fnieto.webm?alt=media&token=be102ac1-0055-4623-aee7-43a3d4c9a2a7', txt: 'Seña "Nieto"' },
+        'Novio':{ img: 'https://firebasestorage.googleapis.com/v0/b/lensegua-20316.appspot.com/o/00002%2F00007%2Fnovio.webm?alt=media&token=46fccc3b-ace3-4dce-999a-bc4d6a686d59', txt: 'Seña "Novio"' },
+        'Bebe':{ img: 'https://firebasestorage.googleapis.com/v0/b/lensegua-20316.appspot.com/o/00002%2F00007%2Fbebe%CC%81.webm?alt=media&token=78400b79-8015-4e51-aeac-0218fab7d163', txt: 'Seña "Bebé"' },
+        'Tia':{ img: 'https://firebasestorage.googleapis.com/v0/b/lensegua-20316.appspot.com/o/00002%2F00007%2Fti%CC%81a.webm?alt=media&token=b4a8e818-cdbc-4d94-a4fb-e669afe5efa6', txt: 'Seña "Tia"' },
+      };
+      const sidebarContent = document.getElementById('sidebar-content');
+
+    document.querySelectorAll('.list-item').forEach(li => {
+      li.addEventListener('click', () => {
+        // 1) Colapsar cualquier sección abierta
+        document.querySelectorAll('.accordion-collapse.show')
+          .forEach(shown => new bootstrap.Collapse(shown, { toggle: true }));
+
+        // 2) Obtener la entrada
+        const entry = mapping[li.dataset.key];
+        if (!entry) return;
+
+        // 3) Generar HTML según tipo de recurso
+        const src = entry.img;
+        let mediaHtml;
+        if (src.match(/\.(webm|mp4)(\?|$)/i)) {
+          mediaHtml = `
+            <video controls autoplay loop style="width:100%; border-radius:8px 8px 0 0;">
+              <source src="${src}" type="video/webm">
+              Tu navegador no soporta este formato de video.
+            </video>`;
+        } else {
+          mediaHtml = `
+            <img src="${src}"
+                 alt="Seña de ${entry.txt}"
+                 class="card-img-top"
+                 style="border-radius:8px 8px 0 0;">`;
+        }
+
+        // 4) Inyectar la card
+        sidebarContent.innerHTML = `
+          <div class="card">
+            ${mediaHtml}
+            <div class="card-body">
+              <p class="card-text">${entry.txt}</p>
+            </div>
+          </div>`;
+      });
+    });
+  });
+  </script>
+</body>
+</html>
