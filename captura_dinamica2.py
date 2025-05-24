@@ -17,7 +17,7 @@ drawing = mp.solutions.drawing_utils
 
 # Lista de señas dinámicas a capturar
 
-acciones = np.array(['u'])       # <---------- Escribe la letra/palabra a entrenar
+acciones = np.array(['z'])       # <---------- Escribe la letra/palabra a entrenar
 base_dir = 'MP_Data_abecedario'  # <---------- Escribe la categoria 
 
 # Configuraciones de captura
