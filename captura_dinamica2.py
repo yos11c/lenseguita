@@ -17,8 +17,8 @@ drawing = mp.solutions.drawing_utils
 
 # Lista de señas dinámicas a capturar
 
-acciones = np.array(['Domingo'])       # <---------- Escribe la letra/palabra a entrenar
-base_dir = 'MP_Data_dias'  # <---------- Escribe la categoria 
+acciones = np.array(['papa'])       # <---------- Escribe la letra/palabra a entrenar
+base_dir = 'MP_Data_familia'  # <---------- Escribe la categoria 
 
 # Configuraciones de captura
 o_secuencias = 30
@@ -88,11 +88,11 @@ for accion in acciones:
                 data_secuencia.append([0]*126)
 
             # Mostrar texto e imagen
-            cv2.putText(frame, f'Seña: {accion}', (10, 30),
+            cv2.putText(frame, f'Sena: {accion}', (10, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2)
             cv2.putText(frame, f'Secuencia: {secuencia+1}', (10, 70),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,255,0), 2)
-            cv2.imshow('Grabando seña dinámica', frame)
+            cv2.imshow('Grabando sena dinámica', frame)
 
             if cv2.waitKey(1) & 0xFF == 27:
                 break
