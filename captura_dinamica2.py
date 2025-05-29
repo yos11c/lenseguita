@@ -22,11 +22,11 @@ hands = mp_hands.Hands(
 drawing = mp.solutions.drawing_utils
 
 # Configuración de señas
-acciones = np.array(['Lunes'])  # Editar con tus señas
+acciones = np.array(['Martes'])  # Editar con tus señas
 base_dir = 'MP_Data_dias'
 
 # Configuraciones fijas
-SECUENCIAS_POR_ACCION = 90
+SECUENCIAS_POR_ACCION = 30
 LONGITUD_SECUENCIA = 30  # 30 frames fijos
 
 def asegurar_formato_datos(puntos):
