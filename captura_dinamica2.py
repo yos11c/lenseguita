@@ -25,9 +25,14 @@ drawing = mp.solutions.drawing_utils
 acciones = np.array(['Domingo'])  # Editar con tus señas
 base_dir = 'MP_Data_dias'
 
+<<<<<<< HEAD
+acciones = np.array(['Lunes'])       # <---------- Escribe la letra/palabra a entrenar
+base_dir = 'MP_Data_dias'  # <---------- Escribe la categoria 
+=======
 # Configuraciones fijas
 SECUENCIAS_POR_ACCION = 30
 LONGITUD_SECUENCIA = 30  # 30 frames fijos
+>>>>>>> 44503cec69d54bb76907e73bebcc04cb13f85c72
 
 def asegurar_formato_datos(puntos):
     """Garantiza siempre 126 valores (63 x 2 manos)"""
