@@ -17,7 +17,7 @@ drawing = mp.solutions.drawing_utils
 
 # Lista de señas dinámicas a capturar
 
-acciones = np.array(['Domingo'])       # <---------- Escribe la letra/palabra a entrenar
+acciones = np.array(['Lunes'])       # <---------- Escribe la letra/palabra a entrenar
 base_dir = 'MP_Data_dias'  # <---------- Escribe la categoria 
 
 # Configuraciones de captura
