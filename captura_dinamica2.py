@@ -22,8 +22,8 @@ hands = mp_hands.Hands(
 drawing = mp.solutions.drawing_utils
 
 # Configuración de señas
-acciones = np.array(['Sabado'])  # Editar con tus señas
-base_dir = 'MP_Data_dias'
+acciones = np.array(['Hermano'])  # Editar con tus señas
+base_dir = 'MP_Data_familia'
 
 # Configuraciones fijas
 SECUENCIAS_POR_ACCION = 30
