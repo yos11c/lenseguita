@@ -2,11 +2,22 @@ import cv2
 import numpy as np
 import mediapipe as mp
 import time
-from flask import Flask, render_template, Response, jsonify
+from flask import Flask, render_template, Response, jsonify, request, abort
 from tensorflow.keras.models import load_model
 from threading import Thread, Lock
 
 app = Flask(__name__)
+
+active_cat = None
+
+@app.before_request
+
+def set_active_category():
+    global active_cat
+    # si la ruta es '/abecedario', '/familia', etc.
+    parts = request.path.strip('/').split('/')
+    if parts and parts[0] in modelos:
+        active_cat = parts[0]
 
 # 1) Carga de modelos independientes
 modelos = {
@@ -45,8 +56,13 @@ def prediction_thread(cat):
     modelo = modelos[cat]
     # Reutilizar la misma instancia de MediaPipe Hands
     while True:
+        
+        if cat != active_cat:
+            time.sleep(0.05)
+            continue
+        
         with lock:
-            frame = latest_frame[cat].copy() if latest_frame[cat] is not None else None
+            frame = latest_frame[cat].copy() if latest_frame[cat] is not None else None    
         if frame is not None:
             rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             results = hands.process(rgb)
@@ -145,4 +161,3 @@ def get_pred(cat):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
