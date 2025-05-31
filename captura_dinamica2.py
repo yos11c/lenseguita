@@ -9,7 +9,7 @@ print("📸 Iniciando captura dinámica con temporizador preciso...")
 # ==============================================
 # CONFIGURACIONES EDITABLES
 # ==============================================
-TIEMPO_CAPTURA = 1.0  # Duración de captura
+TIEMPO_CAPTURA = 2.0  # Duración de captura
 # ==============================================
 
 # Configuración de MediaPipe
