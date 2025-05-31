@@ -22,8 +22,8 @@ hands = mp_hands.Hands(
 drawing = mp.solutions.drawing_utils
 
 # Configuración de señas
-acciones = np.array(['Domingo'])  # Editar con tus señas
-base_dir = 'MP_Data_dias'
+acciones = np.array(['z'])  # Editar con tus señas
+base_dir = 'MP_Data_abecedario'
 
 
 # Configuraciones fijas
