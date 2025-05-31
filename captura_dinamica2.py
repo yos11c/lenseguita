@@ -9,7 +9,7 @@ print("📸 Iniciando captura dinámica con temporizador preciso...")
 # ==============================================
 # CONFIGURACIONES EDITABLES
 # ==============================================
-TIEMPO_CAPTURA = 2.0  # Duración de captura
+TIEMPO_CAPTURA = 1.0  # Duración de captura
 # ==============================================
 
 # Configuración de MediaPipe
@@ -22,8 +22,8 @@ hands = mp_hands.Hands(
 drawing = mp.solutions.drawing_utils
 
 # Configuración de señas
-acciones = np.array(['Domingo'])  # Editar con tus señas
-base_dir = 'MP_Data_dias'
+acciones = np.array(['z'])  # Editar con tus señas
+base_dir = 'MP_Data_abecedario'
 
 
 # Configuraciones fijas
